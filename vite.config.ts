@@ -1,28 +1,44 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { VitePWA } from "vite-plugin-pwa";
-
-let faviconURL = "/favicon.svg";
+import react from '@vitejs/plugin-react';
+import {defineConfig} from 'vite';
+import {VitePWA} from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      includeAssets: [faviconURL],
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      devOptions: {
+        enabled: true,
+      },
       manifest: {
-        theme_color: "#ffffff",
+        name: 'PWA App',
+        short_name: '',
+        description: 'Allows you to pin custom text to your notifications',
+        theme_color: '#14b8a5',
         icons: [
           {
-            src: faviconURL,
-            sizes: "512x512",
-            type: "image/svg+xml",
-            purpose: "any maskable",
+            src: 'pwa-64x64.png',
+            sizes: '64x64',
+            type: 'image/png',
           },
           {
-            src: faviconURL,
-            sizes: "512x512",
-            type: "image/png",
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'maskable-icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
           },
         ],
       },
