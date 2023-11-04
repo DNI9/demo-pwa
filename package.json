@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "rimraf dev-dist && vite",
     "build": "rimraf dist && tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "dexie": "^3.2.4",
@@ -22,6 +23,7 @@
     "@vitejs/plugin-react": "^4.0.4",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
+    "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.2.2",
