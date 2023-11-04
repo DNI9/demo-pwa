@@ -1,4 +1,4 @@
-import db from "../db";
+import db from "../model/db";
 
 export default function Home() {
   const createWallet = async (name = "Cash") => {
