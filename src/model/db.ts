@@ -1,26 +1,108 @@
 import Dexie, { Table } from "dexie";
 
+// ENUMS
+export enum ExchangeType {
+  CREDIT = "CR",
+  DEBIT = "DR",
+  TRANSFER = "TRF",
+  LEND = "LND",
+  BORROW = "BRW",
+}
+
+export enum Currency {
+  INR = "INR",
+  USDOLLER = "USDOLLER",
+}
+
+export enum WalletType {
+  CASH = "CASH",
+  BANK = "BANK",
+  CREDITCARD = "CREDITCARD",
+}
+
+export interface User {
+  name: string;
+  photo: Blob | null;
+}
+
 export interface Wallet {
   name: string;
   type: string;
+  amount: number;
+}
+
+export interface ExpenseTransaction {
+  id: number;
+  assignedTo: number; // WALLET ID (Ex. Cash Wallet, Bank Wallet)
+  timestamp: Date;
+  amount: number;
+  exchanger: string | null; // Person, UPI ID, BANK ACCOUNT One Liner Details, Mobile Number
+  exchangeType: ExchangeType; // Credit, Debit, Transfer, Borrow, Lend
+  transferFrom: string | null; // WALLET ID (Ex. Cash Wallet, Bank Wallet)
+  transferTo: string | null; // WALLET ID (Ex. Cash Wallet, Bank Wallet)
+  category: string;
+  subcategory: string | null;
+  autoCategoryMap: boolean | true; // For marchant to Category or Sub Category Mapping
+}
+
+export interface Preferences {
+  id: number;
+  currency: Currency | Currency.INR;
+
+  // Application stuff
+  theme: string;
+}
+
+export interface CategoryMap {
+  id: number;
+  category: string;
+  exchanger: string;
+  subcategory: string | null;
+  conditionType: string; // CONTAINS, BEGINSWITH, ENDSWITH, EQUALSTO
+  caseSensitiveCheck: boolean | true;
+}
+
+export interface ImportStatementConfig {
+  name: string;
+  detection: [
+    {
+      rank: number;
+      type: string; // BYFILENAME, BYCOLUMNNAME, BYSHEETNAME, BY ROWNAME
+      conditionType: string; // CONTAINS, BEGINSWITH, ENDSWITH, EQUALSTO
+    },
+  ];
+  // DAY 3
+  detectionCondition: string | "AND"; // AND, OR, 1 AND 2 OR 3
+  transactionMap: [
+    {
+      columnName: string; // Excel column name
+      mapTo: string; // Map to fields of Transaction row (Ex. Amount, sender or reciever)
+    },
+  ];
 }
 
 export class MySubClassedDexie extends Dexie {
+  user!: Table<User>;
   wallets!: Table<Wallet>;
+  expenseTransaction!: Table<ExpenseTransaction>;
+  preferences!: Table<Preferences>;
+  categoryMap!: Table<CategoryMap>;
+  importStatementConfig!: Table<ImportStatementConfig>;
 
   constructor() {
     super("sontosh");
     this.version(1).stores({
-      wallets: "&name, type",
+      wallets: "&name",
+      user: "&name",
+      expenseTransaction:
+        "++id, timestamp, exchangeType, category, subcategory",
+      preferences: "id",
+      categoryMap: "++id",
+      importStatementConfig: "&name",
     });
   }
 }
 
 const db = new MySubClassedDexie();
-
-db.on("ready", function () {
-  // Will trigger once and only once.
-  console.log("DB Initialized");
-});
 
 export default db;
