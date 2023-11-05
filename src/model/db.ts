@@ -1,5 +1,25 @@
 import Dexie, { Table } from "dexie";
 
+// ENUMS
+export enum ExchangeType {
+  CREDIT = "CR",
+  DEBIT = "DR",
+  TRANSFER = "TRF",
+  LEND = "LND",
+  BORROW = "BRW",
+}
+
+export enum Currency {
+  INR = "INR",
+  USDOLLER = "USDOLLER",
+}
+
+export enum WalletType {
+  CASH = "CASH",
+  BANK = "BANK",
+  CREDITCARD = "CREDITCARD",
+}
+
 export interface User {
   name: string;
   photo: Blob | null;
@@ -13,10 +33,11 @@ export interface Wallet {
 
 export interface ExpenseTransaction {
   id: number;
+  assignedTo: number; // WALLET ID (Ex. Cash Wallet, Bank Wallet)
   timestamp: Date;
   amount: number;
   exchanger: string | null; // Person, UPI ID, BANK ACCOUNT One Liner Details, Mobile Number
-  exchangeType: string; // Credit, Debit, Transfer
+  exchangeType: ExchangeType; // Credit, Debit, Transfer, Borrow, Lend
   transferFrom: string | null; // WALLET ID (Ex. Cash Wallet, Bank Wallet)
   transferTo: string | null; // WALLET ID (Ex. Cash Wallet, Bank Wallet)
   category: string;
@@ -26,7 +47,7 @@ export interface ExpenseTransaction {
 
 export interface Preferences {
   id: number;
-  currency: string;
+  currency: Currency | Currency.INR;
 
   // Application stuff
   theme: string;
